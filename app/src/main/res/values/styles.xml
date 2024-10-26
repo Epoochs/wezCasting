@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom style for the active indicator -->
+    <style name="CustomActiveIndicatorStyle">
+        <item name="android:colorBackground">#FFFFFF</item> <!-- White color for active indicator -->
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.CustomIndicator</item>
+    </style>
+
+    <!-- Optional: Custom shape for the indicator -->
+    <style name="ShapeAppearance.CustomIndicator" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50dp</item> <!-- Rounded indicator -->
+    </style>
+</resources>
+

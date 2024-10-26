@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">wezCasting</string>
+    <string name="Home">Home</string>
+    <string name="Favourite">Favourite</string>
+    <string name="Alert">Alert</string>
+    <string name="Settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Hourly_Details">Hourly Details</string>
+    <string name="Daily_Details">Daily Details</string>
+</resources>
