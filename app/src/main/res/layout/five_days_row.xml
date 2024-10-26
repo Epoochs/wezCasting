@@ -24,7 +24,7 @@
         android:id="@+id/tvMinTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/albert_sans"
         android:text="16°"
@@ -40,33 +40,33 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/albert_sans"
         android:text="28°"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/progressBar"
+        app:layout_constraintStart_toEndOf="@+id/pbCurrentTemp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toEndOf="@+id/tvDay"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sun" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/pbCurrentTemp"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="17dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:indeterminateBehavior="repeat"
+        android:progress="50"
         app:layout_constraintStart_toEndOf="@+id/tvMinTemp"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -213,7 +213,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/albert_sans"
-                android:text="5-Day FORECAST"
+                android:text="5-DAY FORECAST"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"

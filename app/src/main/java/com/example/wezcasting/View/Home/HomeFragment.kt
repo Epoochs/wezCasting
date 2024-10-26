@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
+import com.example.wezcasting.Model.WeatherCasting
 import com.example.wezcasting.Model.WeatherRepository
 import com.example.wezcasting.Networking.WeatherClinet
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.R
 import com.example.wezcasting.View.Home.Adapter.MyDailyDetailsAdapter
+import com.example.wezcasting.View.Home.Adapter.MyFiveDaysDetailsAdapter
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModel
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModelFactory
 import com.example.wezcasting.db.WeatherDatabase
@@ -30,10 +32,15 @@ class HomeFragment : Fragment() , OnLocationUpdates {
     var lat : Double = 0.0
     var lon : Double = 0.0
 
-    /* Recycle views and Adapters */
+    /* Recycle views and Adapters for Hourly details */
     lateinit var recyclerViewHourlyDetails: RecyclerView
     lateinit var myDailyDetailsAdapter: MyDailyDetailsAdapter
     lateinit var hourlyLayoutManager: LinearLayoutManager
+
+    /* Recycle views and Adapters for five days */
+    lateinit var recycleViewFiveDays : RecyclerView
+    lateinit var myFiveDaysDetailsAdapter: MyFiveDaysDetailsAdapter
+    lateinit var fiveLinearLayoutManager: LinearLayoutManager
 
 
     /* Weather fetching and data Representation */
@@ -192,6 +199,12 @@ class HomeFragment : Fragment() , OnLocationUpdates {
             homeViewModel.dataForecast.collect{weatherForecast ->
                 if (weatherForecast != null){
                     myDailyDetailsAdapter.submitList(weatherForecast.list.subList(0,7))
+                    var weatherList = ArrayList<WeatherCasting>()
+                    for (i in 0 until 40 step 7){
+                        println("i :" + i)
+                        weatherList.add(weatherForecast.list.get(i))
+                    }
+                    myFiveDaysDetailsAdapter.submitList(weatherList)
                 }
             }
         }
@@ -224,6 +237,14 @@ class HomeFragment : Fragment() , OnLocationUpdates {
         recyclerViewHourlyDetails.setLayoutManager(hourlyLayoutManager)
         myDailyDetailsAdapter = MyDailyDetailsAdapter(requireActivity(), emptyList())
         recyclerViewHourlyDetails.setAdapter(myDailyDetailsAdapter)
+
+
+        recycleViewFiveDays = view.findViewById(R.id.rvWeatherForecasting)
+        fiveLinearLayoutManager = LinearLayoutManager(requireActivity())
+        fiveLinearLayoutManager.orientation = RecyclerView.VERTICAL
+        recycleViewFiveDays.layoutManager = fiveLinearLayoutManager
+        myFiveDaysDetailsAdapter = MyFiveDaysDetailsAdapter(requireActivity(), emptyList())
+        recycleViewFiveDays.adapter = myFiveDaysDetailsAdapter
     }
 
     fun unixToTime(unixTime : Long) : String{

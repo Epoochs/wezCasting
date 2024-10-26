@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
@@ -27,7 +28,7 @@ class MyFiveDaysDetailsAdapter(var context: Context, var weatherCasting: List<We
 ){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val v = inflater.inflate(R.layout.hourly_row, parent, false)
+        val v = inflater.inflate(R.layout.five_days_row, parent, false)
         val viewHolder: ViewHolder = ViewHolder(v)
 
         return viewHolder
@@ -37,20 +38,38 @@ class MyFiveDaysDetailsAdapter(var context: Context, var weatherCasting: List<We
 
         val currentWeatherForecast = getItem(position)
 
-        holder.tvTimeTemp.text = "" + currentWeatherForecast.main.temp.toString() + "°"
-        holder.tvTime.text = unixToTime(currentWeatherForecast.dt)
+        holder.tvDay.text = unixToDate(currentWeatherForecast.dt)
+
+        if (currentWeatherForecast.weather.get(0).main == "Clear"){
+            holder.imageView.setImageResource(R.drawable.sun)
+        }else{
+            if (currentWeatherForecast.weather.get(0).main == "Clouds"){
+                holder.imageView.setImageResource(R.drawable.clear_sky)
+            }else{
+                if (currentWeatherForecast.weather.get(0).main == "Snow"){
+                    holder.imageView.setImageResource(R.drawable.snowflake)
+                }
+            }
+        }
+
+        holder.tvMinTemp.text = "" + currentWeatherForecast.main.tempMin.toString() + "°"
+        holder.tvMaxTemp.text = "" + currentWeatherForecast.main.tempMax.toString() + "°"
+
+        holder.pbCurrentTemp.progress = currentWeatherForecast.main.temp.toInt()
     }
 
     class ViewHolder(var convertView: View) : RecyclerView.ViewHolder(convertView){
 
-        var tvTimeTemp : TextView = convertView.findViewById(R.id.tvTimeTemp)
-        var tvTime : TextView = convertView.findViewById(R.id.tvTime)
-        var imageView : ImageView = convertView.findViewById(R.id.imgTimeState)
+        var tvDay : TextView = convertView.findViewById(R.id.tvDay)
+        var imageView : ImageView = convertView.findViewById(R.id.imageView3)
+        var tvMinTemp : TextView = convertView.findViewById(R.id.tvMinTemp)
+        var tvMaxTemp : TextView = convertView.findViewById(R.id.tvMaxTemp)
+        var pbCurrentTemp : ProgressBar = convertView.findViewById(R.id.pbCurrentTemp)
     }
 
-    fun unixToTime(unixTime : Long) : String{
+    fun unixToDate(unixTime : Long) : String{
         var date = Date(unixTime * 1000)
-        var dateFormat = SimpleDateFormat("h:m a", Locale.US)
+        var dateFormat = SimpleDateFormat("E", Locale.US)
         return dateFormat.format(date)
     }
 }
