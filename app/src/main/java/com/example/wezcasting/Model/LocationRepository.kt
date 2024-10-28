@@ -60,7 +60,7 @@ class LocationRepository(private val context: Context, var onLocationUpdates: On
                         longitude = lastLocation.longitude
                         latitude = lastLocation.latitude
                         onLocationUpdates.getCurrentWeather(lastLocation.latitude, lastLocation.longitude)
-                        onLocationUpdates.getWeatherForecast(lastLocation.latitude, lastLocation.longitude)
+                      //  onLocationUpdates.getWeatherForecast(lastLocation.latitude, lastLocation.longitude)
                         Log.d("LocationRepo", "Location received: $latitude, $longitude")
                     } else {
                         Log.d("LocationRepo", "Location is null")

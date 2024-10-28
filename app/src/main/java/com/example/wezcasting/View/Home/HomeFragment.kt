@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wezcasting.Model.LocationRepository
@@ -21,11 +23,13 @@ import com.example.wezcasting.View.Home.Adapter.MyDailyDetailsAdapter
 import com.example.wezcasting.View.Home.Adapter.MyFiveDaysDetailsAdapter
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModel
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModelFactory
+import com.example.wezcasting.View.HomeSettingsSharedVM
 import com.example.wezcasting.db.WeatherDatabase
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 
 class HomeFragment : Fragment() , OnLocationUpdates {
 
@@ -50,9 +54,11 @@ class HomeFragment : Fragment() , OnLocationUpdates {
     lateinit var homeViewModel: HomeViewModel
     lateinit var weatherDatabase: WeatherDatabase
 
+    /*SharedViewModel between Home and Setting fragments */
+    lateinit var sharedVM: HomeSettingsSharedVM
+
     /* View Components */
     lateinit var tvTownCurrentTemp : TextView
-    lateinit var tvTempUnit : TextView
     lateinit var tvWeatherState : TextView
     lateinit var tvSunSetTime : TextView
     lateinit var tvSunRiseTime : TextView
@@ -69,6 +75,14 @@ class HomeFragment : Fragment() , OnLocationUpdates {
     lateinit var tvPressureDesc : TextView
     lateinit var tvSpeed : TextView
     lateinit var tvGust : TextView
+
+    /* Units */
+    lateinit var tvVisibilityUnit : TextView
+    lateinit var tvHumidityUnit : TextView
+    lateinit var tvTempUnit : TextView
+    lateinit var tvWindSpeedUnit : TextView
+    lateinit var tvWindGustUnit : TextView
+    lateinit var tvPressureUnit : TextView
 
     override fun onStart() {
         super.onStart()
@@ -99,115 +113,221 @@ class HomeFragment : Fragment() , OnLocationUpdates {
         println("Current Weather : " + lat)
         println("Current Weather : " + lon)
 
-        val factory = HomeViewModelFactory(weatherRepository,lat,lon)
-        homeViewModel = ViewModelProvider(this,factory).get(HomeViewModel::class.java)
+        // isAdded is used to check whether the fragment is added to the activity or not.
+        if(isAdded) {
 
-         homeViewModel.getCurrentWeather()
+            sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
 
-          lifecycleScope.launch {
-              homeViewModel.data.collect{ currentWeather ->
-                  if (currentWeather != null) {
-                      tvTownCurrentTemp.text = currentWeather.main.temp.toString()
-                      tvTempUnit.text = "°C"
+            sharedVM.lang.observe(requireActivity(), Observer { lang ->
+                println("Shared Language: " + lang)
 
-                      var windSpeed = currentWeather.wind.speed * 3.6
-                      var windGust = currentWeather.wind.gust * 3.6
-                      tvGust.text = String.format("%.2f KM/H", windGust)
-                      tvSpeed.text = String.format("%.2f KM/H", windSpeed)
+                sharedVM.tempUnit.observe(requireActivity(), Observer { tempUnit ->
+                    println("Shared TempUnit: " + tempUnit)
 
-                      tvWeatherState.text = currentWeather.weather.get(0).description
+                    sharedVM.windUnit.observe(requireActivity(), Observer { windUnit ->
+                        println("Shared WindUnit: " + windUnit)
+                        sharedVM.unit.observe(requireActivity(), Observer { unit ->
 
-                      var sunsetTime = unixToTime(currentWeather.sys.sunset)
-                      tvSunSetTime.text = sunsetTime
+                            val factory = HomeViewModelFactory(weatherRepository, lat, lon, lang, unit)
+                            homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
 
-                      var sunriseTime = unixToTime(currentWeather.sys.sunrise)
-                      tvSunRiseTime.text = sunriseTime
+                            homeViewModel.getCurrentWeather()
 
-                      tvTownName.text = currentWeather.name
-                      tvHighestTemp.text = "H:" + currentWeather.main.temp_max + "°"
-                      tvLowestTemp.text = "L:" + currentWeather.main.temp_min + "°"
+                            lifecycleScope.launch {
+                                homeViewModel.data.collect { currentWeather ->
+                                    if (currentWeather != null) {
+                                        if(tempUnit.equals("c")) {
+                                            tvTownCurrentTemp.text = currentWeather.main.temp.toString()
+                                            tvTempUnit.text = "°C"
 
-                      tvPressure.text = "" + currentWeather.main.pressure.toString() + " mbar"
-                      if(currentWeather.main.pressure < 1000){
-                          tvPressureDesc.text = "Low Pressure"
-                      }else{
-                          if (currentWeather.main.pressure in 1001..1019){
-                              tvPressureDesc.text = "Moderate Pressure"
-                          }else{
-                              tvPressureDesc.text = "High Pressure"
-                          }
-                      }
+                                            /* Highest and Lowest Temp */
+                                            tvHighestTemp.text = "H:" + currentWeather.main.temp_max.toInt() + "°"
+                                            tvLowestTemp.text = "L:" + currentWeather.main.temp_min.toInt() + "°"
 
-                      tvFeelsLike.text = "" + currentWeather.main.feels_like.toString() + "°"
-                      if(currentWeather.main.feels_like == currentWeather.main.temp){
-                          tvFeelsLikeDesc.text = "it feels exactly the same"
-                      }else{
-                          if (currentWeather.main.feels_like > currentWeather.main.temp){
-                              tvFeelsLikeDesc.text = "it feels hotter"
-                          }else{
-                              tvFeelsLikeDesc.text = "it feels cooler"
-                          }
-                      }
+                                            /* Feels-like Temp */
+                                            tvFeelsLike.text = "" + currentWeather.main.feels_like.toInt().toString() + "°"
+                                            if (currentWeather.main.feels_like == currentWeather.main.temp) {
+                                                tvFeelsLikeDesc.text = "it feels exactly the same"
+                                            } else {
+                                                if (currentWeather.main.feels_like > currentWeather.main.temp) {
+                                                    tvFeelsLikeDesc.text = "it feels hotter"
+                                                } else {
+                                                    tvFeelsLikeDesc.text = "it feels cooler"
+                                                }
+                                            }
+                                        }else{
+                                            if(tempUnit.equals("f")){
+                                                var currentTemp = ((currentWeather.main.temp * 1.8) + 32).toInt()
+                                                tvTownCurrentTemp.text = currentTemp.toString()
+                                                tvTempUnit.text = "°F"
 
-                      tvHumidity.text = currentWeather.main.humidity.toString() + "%"
-                      if (currentWeather.main.humidity in 0 .. 29){
-                          tvHumidityDesc.text = "The air feels dry"
-                      }else{
-                          if (currentWeather.main.humidity in 30 .. 60){
-                              tvHumidityDesc.text = "The air feels comfortable for most people"
-                          }else{
-                              tvHumidityDesc.text = "The air feels heavy and sticky"
-                          }
-                      }
+                                                var highTemp_f = ((currentWeather.main.temp_max * 1.8) + 32).toInt()
+                                                var lowTemp_f = ((currentWeather.main.temp_min * 1.8) + 32).toInt()
+                                                tvHighestTemp.text = "H:" + highTemp_f + "°"
+                                                tvLowestTemp.text = "L:" + lowTemp_f + "°"
 
-                      tvVisibility.text = (currentWeather.visibility / 1000).toString() + " KM"
-                      if (currentWeather.visibility >= 10000){
-                          tvVisibilityDesc.text = "Perfectly clear view."
-                      }else
-                      {
-                          if (currentWeather.visibility in 1000 .. 10000){
-                              tvVisibilityDesc.text = "Nice view."
-                          }else{
-                              if (currentWeather.visibility < 1000){
-                                  tvVisibilityDesc.text = "Poor view."
-                              }else{
-                                  if (currentWeather.visibility < 100){
-                                      tvVisibilityDesc.text = "Severely poor view."
-                                  }
-                              }
-                          }
-                      }
+                                                /* Feels-like Temp */
+                                                var feelLikeTemp_f = ((currentWeather.main.feels_like * 1.8) + 32).toInt()
+                                                tvFeelsLike.text = "" + feelLikeTemp_f.toString() + "°"
+                                                if (feelLikeTemp_f == currentTemp) {
+                                                    tvFeelsLikeDesc.text = "it feels exactly the same"
+                                                } else {
+                                                    if (feelLikeTemp_f > currentTemp) {
+                                                        tvFeelsLikeDesc.text = "it feels hotter"
+                                                    } else {
+                                                        tvFeelsLikeDesc.text = "it feels cooler"
+                                                    }
+                                                }
+                                            }else{
+                                                var currentTemp = (currentWeather.main.temp + 273.15).toInt()
+                                                tvTownCurrentTemp.text = currentTemp.toString()
+                                                tvTempUnit.text = "°K"
 
-                  }else{
-                      println("Nothing")
-                  }
-                  weatherRepository.upsert(currentWeather)
-              }
-          }
+                                                tvHighestTemp.text = "H:" + (currentWeather.main.temp_max + 273.15).toInt() + "°"
+                                                tvLowestTemp.text = "L:" + (currentWeather.main.temp_min + 273.15).toInt() + "°"
+
+                                                /* Feels-like Temp */
+                                                var feelLikeTemp_k = (currentWeather.main.feels_like + 273.15).toInt()
+                                                tvFeelsLike.text = "" + feelLikeTemp_k.toString() + "°"
+                                                if (feelLikeTemp_k == currentTemp) {
+                                                    tvFeelsLikeDesc.text = "it feels exactly the same"
+                                                } else {
+                                                    if (feelLikeTemp_k > currentTemp) {
+                                                        tvFeelsLikeDesc.text = "it feels hotter"
+                                                    } else {
+                                                        tvFeelsLikeDesc.text = "it feels cooler"
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if(windUnit.equals("km")) {
+                                            var windSpeed = currentWeather.wind.speed * 3.6
+                                            var windGust = currentWeather.wind.gust * 3.6
+                                            tvGust.text = String.format("%.2f KM/H", windGust)
+                                            tvSpeed.text = String.format("%.2f KM/H", windSpeed)
+                                        }else{
+                                            var windSpeed = currentWeather.wind.speed * 2.237
+                                            var windGust = currentWeather.wind.gust * 2.237
+                                            tvGust.text = String.format("%.2f MPH", windGust)
+                                            tvSpeed.text = String.format("%.2f MPH", windSpeed)
+                                        }
+
+                                        tvWeatherState.text = currentWeather.weather.get(0).description
+
+                                        var sunsetTime = unixToTime(currentWeather.sys.sunset)
+                                        tvSunSetTime.text = sunsetTime
+
+                                        var sunriseTime = unixToTime(currentWeather.sys.sunrise)
+                                        tvSunRiseTime.text = sunriseTime
+
+                                        tvTownName.text = currentWeather.name
+
+                                        tvPressure.text = "" + currentWeather.main.pressure.toString() + " mbar"
+                                        if (currentWeather.main.pressure < 1000) {
+                                            tvPressureDesc.text = "Low Pressure"
+                                        } else {
+                                            if (currentWeather.main.pressure in 1001..1019) {
+                                                tvPressureDesc.text = "Moderate Pressure"
+                                            } else {
+                                                tvPressureDesc.text = "High Pressure"
+                                            }
+                                        }
+
+
+
+                                        tvHumidity.text = currentWeather.main.humidity.toString() + "%"
+                                        if (currentWeather.main.humidity in 0..29) {
+                                            tvHumidityDesc.text = "The air feels dry"
+                                        } else {
+                                            if (currentWeather.main.humidity in 30..60) {
+                                                tvHumidityDesc.text = "The air feels comfortable for most people"
+                                            } else {
+                                                tvHumidityDesc.text = "The air feels heavy and sticky"
+                                            }
+                                        }
+
+                                        tvVisibility.text = (currentWeather.visibility / 1000).toString()
+                                        if (currentWeather.visibility >= 10000) {
+                                            tvVisibilityDesc.text = "Perfectly clear view."
+                                        } else {
+                                            if (currentWeather.visibility in 1000..10000) {
+                                                tvVisibilityDesc.text = "Nice view."
+                                            } else {
+                                                if (currentWeather.visibility < 1000) {
+                                                    tvVisibilityDesc.text = "Poor view."
+                                                } else {
+                                                    if (currentWeather.visibility < 100) {
+                                                        tvVisibilityDesc.text = "Severely poor view."
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    } else {
+                                        println("Nothing")
+                                    }
+                                    weatherRepository.upsert(currentWeather)
+                                    homeViewModel.getWeatherForecast()
+
+                                    lifecycleScope.launch {
+                                        homeViewModel.dataForecast.collect { weatherForecast ->
+                                            if (weatherForecast != null) {
+                                                myDailyDetailsAdapter.submitList(weatherForecast.list.subList(0, 7).toMutableList())
+                                                var weatherList = ArrayList<WeatherCasting>()
+                                                for (i in 0 until 40 step 7) {
+                                                    println("i :" + i)
+                                                    weatherList.add(weatherForecast.list.get(i))
+                                                }
+                                                myFiveDaysDetailsAdapter.submitList(weatherList)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    })
+                })
+            })
+        }
     }
 
     override fun getWeatherForecast(lat: Double, lon: Double) {
-        this.lat = lat
+     /*   this.lat = lat
         this.lon = lon
 
-        val factory = HomeViewModelFactory(weatherRepository,lat,lon)
-        homeViewModel = ViewModelProvider(this,factory).get(HomeViewModel::class.java)
+        if(isAdded) {
 
-        homeViewModel.getWeatherForecast()
+            sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
 
-        lifecycleScope.launch {
-            homeViewModel.dataForecast.collect{weatherForecast ->
-                if (weatherForecast != null){
-                    myDailyDetailsAdapter.submitList(weatherForecast.list.subList(0,7))
-                    var weatherList = ArrayList<WeatherCasting>()
-                    for (i in 0 until 40 step 7){
-                        println("i :" + i)
-                        weatherList.add(weatherForecast.list.get(i))
+            sharedVM.lang.observe(requireActivity(), Observer {lang ->
+
+                sharedVM.unit.observe(requireActivity(), Observer { unit ->
+                    println(unit)
+                    val factory = HomeViewModelFactory(weatherRepository, lat, lon, lang, unit)
+                    homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+
+                    homeViewModel.getWeatherForecast()
+
+                    lifecycleScope.launch {
+                        homeViewModel.dataForecast.collect { weatherForecast ->
+                            if (weatherForecast != null) {
+                                myDailyDetailsAdapter.submitList(weatherForecast.list.subList(0, 7).toMutableList())
+                                var weatherList = ArrayList<WeatherCasting>()
+                                for (i in 0 until 40 step 7) {
+                                    println("i :" + i)
+                                    weatherList.add(weatherForecast.list.get(i))
+                                }
+                                myFiveDaysDetailsAdapter.submitList(weatherList)
+                            }
+                        }
                     }
-                    myFiveDaysDetailsAdapter.submitList(weatherList)
-                }
-            }
-        }
+
+                })
+            })
+
+
+        }*/
     }
 
     fun init(view: View){
@@ -225,6 +345,9 @@ class HomeFragment : Fragment() , OnLocationUpdates {
         tvTempUnit = view.findViewById(R.id.tvTempUnit)
         tvTownName = view.findViewById(R.id.tvTownName)
         tvTownCurrentTemp = view.findViewById(R.id.tvTownCurrentTemp)
+
+        /* Units */
+        tvVisibilityUnit = view.findViewById(R.id.tvVisibilityUnit)
 
         tvPressureDesc = view.findViewById(R.id.tvPressureDesc)
         tvVisibilityDesc = view.findViewById(R.id.tvVisibilityDesc)
@@ -245,6 +368,9 @@ class HomeFragment : Fragment() , OnLocationUpdates {
         recycleViewFiveDays.layoutManager = fiveLinearLayoutManager
         myFiveDaysDetailsAdapter = MyFiveDaysDetailsAdapter(requireActivity(), emptyList())
         recycleViewFiveDays.adapter = myFiveDaysDetailsAdapter
+        val divider =
+            DividerItemDecoration(recycleViewFiveDays.getContext(), DividerItemDecoration.VERTICAL)
+        recycleViewFiveDays.addItemDecoration(divider)
     }
 
     fun unixToTime(unixTime : Long) : String{

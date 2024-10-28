@@ -1,6 +1,8 @@
 package com.example.wezcasting.View.Home.Adapter
 
 import android.content.Context
+import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -34,6 +38,7 @@ class MyFiveDaysDetailsAdapter(var context: Context, var weatherCasting: List<We
         return viewHolder
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val currentWeatherForecast = getItem(position)
@@ -52,10 +57,48 @@ class MyFiveDaysDetailsAdapter(var context: Context, var weatherCasting: List<We
             }
         }
 
-        holder.tvMinTemp.text = "" + currentWeatherForecast.main.tempMin.toString() + "°"
-        holder.tvMaxTemp.text = "" + currentWeatherForecast.main.tempMax.toString() + "°"
+        holder.tvMinTemp.text = "" + currentWeatherForecast.main.tempMin.toInt().toString() + "°"
+        holder.tvMaxTemp.text = "" + currentWeatherForecast.main.tempMax.toInt().toString() + "°"
 
-        holder.pbCurrentTemp.progress = currentWeatherForecast.main.temp.toInt()
+        var currentTempMap = (currentWeatherForecast.main.temp - currentWeatherForecast.main.tempMin).toInt()
+        var maxTempMap = (currentWeatherForecast.main.tempMax - currentWeatherForecast.main.tempMin).toInt()
+        var currentTempPerc : Int
+        if (maxTempMap > 0) {
+            currentTempPerc = (currentTempMap / maxTempMap) * 100
+        }else{
+            currentTempPerc = 0
+        }
+
+        println("currentTempMap: " + currentTempMap)
+        println("maxTempMap: " + maxTempMap)
+        println("currentTempPerc" + currentTempPerc)
+
+
+        holder.pbCurrentTemp.max = currentWeatherForecast.main.tempMax.toInt()
+        holder.pbCurrentTemp.min = currentWeatherForecast.main.tempMin.toInt()
+        if (currentTempPerc > 80) {
+            holder.pbCurrentTemp.progressTintList =
+                ContextCompat.getColorStateList(context, R.color.red)
+        }else{
+            if (currentTempPerc in 60..80){
+                holder.pbCurrentTemp.progressTintList =
+                    ContextCompat.getColorStateList(context, R.color.orangeRed)
+            }else{
+                if(currentTempPerc in 40..59){
+                    holder.pbCurrentTemp.progressTintList =
+                        ContextCompat.getColorStateList(context, R.color.yellowOrange)
+                }else{
+                    if (currentTempPerc in 30..39){
+                        holder.pbCurrentTemp.progressTintList =
+                            ContextCompat.getColorStateList(context, R.color.yellowGreen)
+                    }else{
+                        holder.pbCurrentTemp.progressTintList =
+                            ContextCompat.getColorStateList(context, R.color.brightGreen)
+                    }
+                }
+            }
+        }
+        holder.pbCurrentTemp.progress = currentTempPerc
     }
 
     class ViewHolder(var convertView: View) : RecyclerView.ViewHolder(convertView){

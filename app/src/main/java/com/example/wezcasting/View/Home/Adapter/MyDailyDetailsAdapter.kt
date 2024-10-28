@@ -17,10 +17,12 @@ import java.util.Locale
 class MyDailyDetailsAdapter(var context: Context, var weatherCasting: List<WeatherCasting>) : ListAdapter<WeatherCasting, MyDailyDetailsAdapter.ViewHolder> (
     HomeDiffUtil()
 ){
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v = inflater.inflate(R.layout.hourly_row, parent, false)
         val viewHolder: ViewHolder = ViewHolder(v)
+
 
         return viewHolder
     }
@@ -29,10 +31,10 @@ class MyDailyDetailsAdapter(var context: Context, var weatherCasting: List<Weath
 
         val currentWeatherForecast = getItem(position)
 
-        holder.tvTimeTemp.text = "" + currentWeatherForecast.main.temp.toString() + "°"
+        holder.tvTimeTemp.text = "" + currentWeatherForecast.main.temp.toInt().toString() + "°"
         holder.tvTime.text = unixToTime(currentWeatherForecast.dt)
 
-        if (nightAndDay(currentWeatherForecast.dt).toInt() in 0 .. 6 || nightAndDay(currentWeatherForecast.dt).toInt() in 18 .. 24){
+        if (currentWeatherForecast.sys.pod.equals("n")){
             if (currentWeatherForecast.weather.get(0).main == "Clear") {
                 holder.imageView.setImageResource(R.drawable.moon)
             }else{
@@ -58,7 +60,7 @@ class MyDailyDetailsAdapter(var context: Context, var weatherCasting: List<Weath
 
     fun unixToTime(unixTime : Long) : String{
         var date = Date(unixTime * 1000)
-        var dateFormat = SimpleDateFormat("h:m a", Locale.US)
+        var dateFormat = SimpleDateFormat("h:00 a", Locale.US)
         return dateFormat.format(date)
     }
 
@@ -66,5 +68,10 @@ class MyDailyDetailsAdapter(var context: Context, var weatherCasting: List<Weath
         var date = Date(unixTime * 1000)
         var time = SimpleDateFormat("H", Locale.US)
         return time.format(date)
+    }
+
+    override fun submitList(list: MutableList<WeatherCasting>?) {
+        super.submitList(list)
+
     }
 }

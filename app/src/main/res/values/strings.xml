@@ -8,4 +8,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Hourly_Details">Hourly Details</string>
     <string name="Daily_Details">Daily Details</string>
+    <string name="Weather">Weather</string>
+    <string name="Cairo">Cairo</string>
 </resources>

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : Double, var lon : Double) : ViewModel() {
+class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : Double, var lon : Double, var lang : String, var unit : String) : ViewModel() {
 
     private val _data = MutableStateFlow<CurrentWeather?>(null)
     val data : StateFlow<CurrentWeather?> = _data
@@ -19,7 +19,7 @@ class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : 
 
     fun getCurrentWeather(){
         viewModelScope.launch {
-            weatherRepository.fetchCurrentWeather(lat,lon,"en","metric").collect{currentWeather ->
+            weatherRepository.fetchCurrentWeather(lat,lon,lang,unit).collect{currentWeather ->
                 _data.value = currentWeather
             }
         }
@@ -27,7 +27,7 @@ class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : 
 
     fun getWeatherForecast(){
         viewModelScope.launch {
-            weatherRepository.fetchWeatherForecast(lat,lon, lang = "en", "metric","").collect{weatherForecast ->
+            weatherRepository.fetchWeatherForecast(lat,lon, lang, units = unit,"").collect{weatherForecast ->
                 _dataForecast.value = weatherForecast
             }
         }
