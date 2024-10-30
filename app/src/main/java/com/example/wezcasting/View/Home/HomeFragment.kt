@@ -23,7 +23,7 @@ import com.example.wezcasting.View.Home.Adapter.MyDailyDetailsAdapter
 import com.example.wezcasting.View.Home.Adapter.MyFiveDaysDetailsAdapter
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModel
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModelFactory
-import com.example.wezcasting.View.HomeSettingsSharedVM
+import com.example.wezcasting.HomeSettingsSharedVM
 import com.example.wezcasting.db.WeatherDatabase
 import kotlinx.coroutines.launch
 import java.sql.Date
@@ -32,6 +32,8 @@ import java.util.Locale
 
 
 class HomeFragment : Fragment() , OnLocationUpdates {
+
+    val weatherSet = HashSet<String>()
 
     var lat : Double = 0.0
     var lon : Double = 0.0
@@ -137,7 +139,7 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                                 homeViewModel.data.collect { currentWeather ->
                                     if (currentWeather != null) {
                                         if(tempUnit.equals("c")) {
-                                            tvTownCurrentTemp.text = currentWeather.main.temp.toString()
+                                            tvTownCurrentTemp.text = currentWeather.main.temp.toInt().toString()
                                             tvTempUnit.text = "°C"
 
                                             /* Highest and Lowest Temp */

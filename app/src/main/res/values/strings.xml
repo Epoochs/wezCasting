@@ -10,4 +10,11 @@
     <string name="Daily_Details">Daily Details</string>
     <string name="Weather">Weather</string>
     <string name="Cairo">Cairo</string>
+    <string name="Temp_Unit">Temp Unit</string>
+    <string name="Celsius">Celsius</string>
+    <string name="Fahrenheit">Fahrenheit</string>
+    <string name="Kelvin">Kelvin</string>
+    <string name="Wind_Unit">Wind Unit</string>
+    <string name="KM">KM</string>
+    <string name="Mile">Mile</string>
 </resources>

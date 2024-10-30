@@ -7,11 +7,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.wezcasting.Model.CurrentWeather
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
     @Query("SELECT * FROM weather_table")
-    fun allCurrentWeather() : LiveData<CurrentWeather>
+    fun allCurrentWeather() : Flow<CurrentWeather>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertWeatherLocation(weather: CurrentWeather)

@@ -5,10 +5,19 @@ import androidx.lifecycle.LiveData
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.db.WeatherDatabase
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 class WeatherRepository(private val weatherService: WeatherService, private val weatherDatabase: WeatherDatabase){//, private val weatherDatabase: WeatherDatabase){
+
+    private val _savedData = MutableStateFlow<CurrentWeather?>(null)
+    val savedData : StateFlow<CurrentWeather?> = _savedData
 
     /* Our function to fetch our data */
     suspend fun fetchCurrentWeather(lat : Double, lon : Double, lang : String, units : String) : Flow<CurrentWeather?> = flow {
@@ -64,7 +73,11 @@ class WeatherRepository(private val weatherService: WeatherService, private val 
         weatherDatabase.getWeatherDao().removeAllWeatherLocation()
     }
 
-    suspend fun getWeatherLocation() : LiveData<CurrentWeather>{
-        return weatherDatabase.getWeatherDao().allCurrentWeather()
+    suspend fun getWeatherLocation(){
+        CoroutineScope(Dispatchers.IO).launch {
+            weatherDatabase.getWeatherDao().allCurrentWeather().collect{savedCurrentWeather ->
+                _savedData.value = savedCurrentWeather
+            }
+        }
     }
 }

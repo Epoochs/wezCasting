@@ -75,7 +75,7 @@ class MyFiveDaysDetailsAdapter(var context: Context, var weatherCasting: List<We
 
 
         holder.pbCurrentTemp.max = currentWeatherForecast.main.tempMax.toInt()
-        holder.pbCurrentTemp.min = currentWeatherForecast.main.tempMin.toInt()
+     //   holder.pbCurrentTemp.min = currentWeatherForecast.main.tempMin.toInt()
         if (currentTempPerc > 80) {
             holder.pbCurrentTemp.progressTintList =
                 ContextCompat.getColorStateList(context, R.color.red)

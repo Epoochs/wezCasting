@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.wezcasting.R
-import com.example.wezcasting.View.HomeSettingsSharedVM
+import com.example.wezcasting.HomeSettingsSharedVM
 
 class SettingsFragment : Fragment() {
 
     private lateinit var sharedVM: HomeSettingsSharedVM
+    lateinit var tempRadioGroup : RadioGroup
+    lateinit var windRadioGroup : RadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,9 +29,34 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
-        sharedVM.setLang("en")
-        sharedVM.setTempUnit("k")
-        sharedVM.setWindUnit("mph")
-        sharedVM.setUnit("")
+        tempRadioGroup = view.findViewById(R.id.rgTempUnits)
+        windRadioGroup = view.findViewById(R.id.rgWindUnits)
+
+        tempRadioGroup.setOnCheckedChangeListener{group, checked ->
+            val selectedTempRadioButton = view.findViewById<RadioButton>(checked)
+            val selectedTempUnit = selectedTempRadioButton.text
+            if(selectedTempUnit.equals("Fahrenheit")){
+                sharedVM.setTempUnit("f")
+                sharedVM.setUnit("imperial")
+            }else{
+                if(selectedTempUnit.equals("°C")){
+                    sharedVM.setTempUnit("c")
+                    sharedVM.setUnit("metric")
+                }else{
+                    sharedVM.setTempUnit("k")
+                    sharedVM.setUnit("")
+                }
+            }
+        }
+
+        windRadioGroup.setOnCheckedChangeListener{group, checked ->
+            val selectedWindRadioButton = view.findViewById<RadioButton>(checked)
+            val selectedWindUnit = selectedWindRadioButton.text
+            if(selectedWindUnit.equals("KM")){
+                sharedVM.setWindUnit("km")
+            }else{
+                sharedVM.setWindUnit("mph")
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken
 
 @Entity(tableName = "weather_table")
 data class CurrentWeather(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id : Int,
     val coord: Coord,
     val weather: List<WeatherCurrent>,

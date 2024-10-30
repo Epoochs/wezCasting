@@ -1,4 +1,4 @@
-package com.example.wezcasting.View
+package com.example.wezcasting
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

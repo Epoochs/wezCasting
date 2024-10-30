@@ -1,4 +1,4 @@
-package com.example.wezcasting.View
+package com.example.wezcasting
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.example.wezcasting.R
 import com.example.wezcasting.View.Alert.AlertFragment
 import com.example.wezcasting.View.Favourite.FavouriteFragment
 import com.example.wezcasting.View.Home.HomeFragment
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(){
                             )
                         }
                     } else {
-                        if (R.id.navigation_favorite == itemID) {
+                        if (R.id.navigation_cal == itemID) {
                             (if (settingsFragment == null) SettingsFragment().also { settingsFragment = it } else settingsFragment)?.let {
                                 replaceFragment(
                                     it
