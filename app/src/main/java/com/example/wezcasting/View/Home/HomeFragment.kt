@@ -33,8 +33,6 @@ import java.util.Locale
 
 class HomeFragment : Fragment() , OnLocationUpdates {
 
-    val weatherSet = HashSet<String>()
-
     var lat : Double = 0.0
     var lon : Double = 0.0
 
@@ -102,7 +100,7 @@ class HomeFragment : Fragment() , OnLocationUpdates {
         super.onViewCreated(view, savedInstanceState)
         weatherService = WeatherClinet.weatherService
         weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-        weatherRepository = WeatherRepository(weatherService,weatherDatabase)
+        weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
         locationRepository = LocationRepository(requireActivity(),this)
 
         init(view)
@@ -120,15 +118,15 @@ class HomeFragment : Fragment() , OnLocationUpdates {
 
             sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
 
-            sharedVM.lang.observe(requireActivity(), Observer { lang ->
+            sharedVM.lang.observe(viewLifecycleOwner, Observer { lang ->
                 println("Shared Language: " + lang)
 
-                sharedVM.tempUnit.observe(requireActivity(), Observer { tempUnit ->
+                sharedVM.tempUnit.observe(viewLifecycleOwner, Observer { tempUnit ->
                     println("Shared TempUnit: " + tempUnit)
 
-                    sharedVM.windUnit.observe(requireActivity(), Observer { windUnit ->
+                    sharedVM.windUnit.observe(viewLifecycleOwner, Observer { windUnit ->
                         println("Shared WindUnit: " + windUnit)
-                        sharedVM.unit.observe(requireActivity(), Observer { unit ->
+                        sharedVM.unit.observe(viewLifecycleOwner, Observer { unit ->
 
                             val factory = HomeViewModelFactory(weatherRepository, lat, lon, lang, unit)
                             homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
@@ -291,6 +289,8 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                     })
                 })
             })
+        }else{
+            println("Fragment is not added!")
         }
     }
 
@@ -330,6 +330,9 @@ class HomeFragment : Fragment() , OnLocationUpdates {
 
 
         }*/
+    }
+
+    override fun getMycurrentLocation(lat: Double, lon: Double) {
     }
 
     fun init(view: View){

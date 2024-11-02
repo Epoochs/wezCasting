@@ -16,6 +16,7 @@ class SettingsFragment : Fragment() {
     private lateinit var sharedVM: HomeSettingsSharedVM
     lateinit var tempRadioGroup : RadioGroup
     lateinit var windRadioGroup : RadioGroup
+    lateinit var langRadioGroup: RadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +32,7 @@ class SettingsFragment : Fragment() {
         sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
         tempRadioGroup = view.findViewById(R.id.rgTempUnits)
         windRadioGroup = view.findViewById(R.id.rgWindUnits)
+        langRadioGroup = view.findViewById(R.id.rgLang)
 
         tempRadioGroup.setOnCheckedChangeListener{group, checked ->
             val selectedTempRadioButton = view.findViewById<RadioButton>(checked)
@@ -39,7 +41,7 @@ class SettingsFragment : Fragment() {
                 sharedVM.setTempUnit("f")
                 sharedVM.setUnit("imperial")
             }else{
-                if(selectedTempUnit.equals("°C")){
+                if(selectedTempUnit.equals("Celsius")){
                     sharedVM.setTempUnit("c")
                     sharedVM.setUnit("metric")
                 }else{
@@ -56,6 +58,16 @@ class SettingsFragment : Fragment() {
                 sharedVM.setWindUnit("km")
             }else{
                 sharedVM.setWindUnit("mph")
+            }
+        }
+
+        langRadioGroup.setOnCheckedChangeListener{group, checked ->
+            val selectedLangRadioButton = view.findViewById<RadioButton>(checked)
+            val selectLang = selectedLangRadioButton.text
+            if (selectLang.equals("Arabic")){
+                sharedVM.setLang("ar")
+            }else{
+                sharedVM.setLang("en")
             }
         }
     }

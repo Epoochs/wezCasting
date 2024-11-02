@@ -5,28 +5,54 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context=".View.Favourite.SearchFragment">
+    android:background="@color/white"
+    tools:context=".View.Favourite.SearchFragment" >
 
-    <TextView
-        android:id="@+id/tvWeatherTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="44dp"
-        android:fontFamily="@font/albert_sans"
-        android:text="@string/Weather"
-        android:textColor="@color/white"
-        android:textSize="34sp"
-        app:layout_constraintStart_toStartOf="parent"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSavedWeathers"
-        android:layout_width="409dp"
-        android:layout_height="633dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/svGetWeather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:queryHint="Search..."
+        android:iconifiedByDefault="false"
+        android:elevation="5dp"
+        android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeatherTitle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/my_location_button"
+        android:layout_width="50dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/search_view_shape"
+        android:contentDescription="My Location"
+        android:src="@drawable/ic_my_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/svGetWeather" />
+
+    <ImageButton
+        android:id="@+id/my_save_button"
+        android:layout_width="50dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/search_view_shape"
+        android:contentDescription="My Saved"
+        android:src="@drawable/baseline_bookmark_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_location_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

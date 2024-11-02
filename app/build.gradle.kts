@@ -74,4 +74,9 @@ dependencies {
     implementation (libs.play.services.location)
     implementation (libs.gson.v288)
 
+    implementation (libs.play.services.maps.v1802)
+    implementation(libs.play.services.maps)
+    implementation (libs.osmdroid.android)
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
 }

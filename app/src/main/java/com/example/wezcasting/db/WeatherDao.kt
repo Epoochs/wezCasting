@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WeatherDao {
     @Query("SELECT * FROM weather_table")
-    fun allCurrentWeather() : Flow<CurrentWeather>
+    fun allCurrentWeather() : Flow<List<CurrentWeather>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertWeatherLocation(weather: CurrentWeather)

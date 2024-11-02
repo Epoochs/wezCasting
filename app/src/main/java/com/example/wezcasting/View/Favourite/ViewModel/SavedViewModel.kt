@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel(private val weatherRepository: WeatherRepository, var lat : Double, var lon : Double) : ViewModel() {
+class SavedViewModel(private val weatherRepository: WeatherRepository, var lat : Double, var lon : Double) : ViewModel() {
 
-  //  val savedWeatherData: StateFlow<CurrentWeather?> = weatherRepository.savedData
+    val savedWeatherData: StateFlow<List<CurrentWeather>?> = weatherRepository.savedData
     private val _data = MutableStateFlow<CurrentWeather?>(null)
     val data : StateFlow<CurrentWeather?> = _data
 

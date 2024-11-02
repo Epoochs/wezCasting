@@ -45,7 +45,7 @@ class LocationRepository(private val context: Context, var onLocationUpdates: On
 
     @SuppressLint("MissingPermission")
     fun getFreshLocation() {
-        val locationRequest = LocationRequest.Builder(10000).apply {
+        val locationRequest = LocationRequest.Builder(100000).apply {
             setPriority(Priority.PRIORITY_HIGH_ACCURACY)
         }.build()
 
@@ -60,6 +60,7 @@ class LocationRepository(private val context: Context, var onLocationUpdates: On
                         longitude = lastLocation.longitude
                         latitude = lastLocation.latitude
                         onLocationUpdates.getCurrentWeather(lastLocation.latitude, lastLocation.longitude)
+                        onLocationUpdates.getMycurrentLocation(lastLocation.latitude, lastLocation.longitude)
                       //  onLocationUpdates.getWeatherForecast(lastLocation.latitude, lastLocation.longitude)
                         Log.d("LocationRepo", "Location received: $latitude, $longitude")
                     } else {

@@ -13,7 +13,9 @@ appcompat = "1.7.0"
 kotlinxCoroutinesCore = "1.8.0"
 lifecycleViewmodelKtx = "2.8.6"
 material = "1.12.0"
+osmdroidAndroid = "6.1.10"
 playServicesLocation = "21.3.0"
+playServicesMapsVersion = "18.0.2"
 roomKtx = "2.6.1"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
@@ -38,7 +40,9 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

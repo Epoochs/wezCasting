@@ -16,8 +16,19 @@ import kotlinx.coroutines.launch
 
 class WeatherRepository(private val weatherService: WeatherService, private val weatherDatabase: WeatherDatabase){//, private val weatherDatabase: WeatherDatabase){
 
-    private val _savedData = MutableStateFlow<CurrentWeather?>(null)
-    val savedData : StateFlow<CurrentWeather?> = _savedData
+    private val _savedData = MutableStateFlow<List<CurrentWeather>?>(emptyList())
+    val savedData : StateFlow<List<CurrentWeather>?> = _savedData
+
+    companion object{
+        private var INSTANCE: WeatherRepository? = null
+        fun getInstance(weatherService: WeatherService,weatherDatabase: WeatherDatabase): WeatherRepository{
+            return INSTANCE ?: synchronized(this){
+                val instance = WeatherRepository(weatherService,weatherDatabase)
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 
     /* Our function to fetch our data */
     suspend fun fetchCurrentWeather(lat : Double, lon : Double, lang : String, units : String) : Flow<CurrentWeather?> = flow {
