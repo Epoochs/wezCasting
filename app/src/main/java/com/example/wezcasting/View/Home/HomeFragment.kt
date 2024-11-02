@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.myapplication.Networking.ConnectivityRepository
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
 import com.example.wezcasting.Model.WeatherCasting
@@ -24,7 +27,9 @@ import com.example.wezcasting.View.Home.Adapter.MyFiveDaysDetailsAdapter
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModel
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModelFactory
 import com.example.wezcasting.HomeSettingsSharedVM
+import com.example.wezcasting.Model.CurrentWeather
 import com.example.wezcasting.db.WeatherDatabase
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.text.SimpleDateFormat
@@ -35,6 +40,9 @@ class HomeFragment : Fragment() , OnLocationUpdates {
 
     var lat : Double = 0.0
     var lon : Double = 0.0
+
+    var currentWeather : CurrentWeather? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     /* Recycle views and Adapters for Hourly details */
     lateinit var recyclerViewHourlyDetails: RecyclerView
@@ -75,6 +83,7 @@ class HomeFragment : Fragment() , OnLocationUpdates {
     lateinit var tvPressureDesc : TextView
     lateinit var tvSpeed : TextView
     lateinit var tvGust : TextView
+    var connectionRestore = true
 
     /* Units */
     lateinit var tvVisibilityUnit : TextView
@@ -83,6 +92,8 @@ class HomeFragment : Fragment() , OnLocationUpdates {
     lateinit var tvWindSpeedUnit : TextView
     lateinit var tvWindGustUnit : TextView
     lateinit var tvPressureUnit : TextView
+
+    lateinit var connectivityRepository: ConnectivityRepository
 
     override fun onStart() {
         super.onStart()
@@ -98,10 +109,40 @@ class HomeFragment : Fragment() , OnLocationUpdates {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        weatherService = WeatherClinet.weatherService
-        weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-        weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
-        locationRepository = LocationRepository(requireActivity(),this)
+        connectivityRepository = ConnectivityRepository(requireContext())
+        val connection : LiveData<Boolean> = connectivityRepository.getIsConnected()
+
+        connection.observe(requireActivity(), Observer{check ->
+            if (check){
+                if (connectionRestore) {
+                    println("Connected")
+                    weatherService = WeatherClinet.weatherService
+                    weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                    weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+                    locationRepository = LocationRepository(requireActivity(), this)
+                }else{
+                    println("Connection Restored")
+                    Snackbar.make(view, "Connection Restored", Snackbar.LENGTH_SHORT).show()
+                    weatherService = WeatherClinet.weatherService
+                    weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                    weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+                    locationRepository = LocationRepository(requireActivity(), this)
+                    connectionRestore = true
+                }
+            }else{
+                println("Not connected")
+                connectionRestore = false
+                Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+                weatherService = WeatherClinet.weatherService
+                weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+            }
+        })
+
+     /*   weatherService = WeatherClinet.weatherService
+        locationRepository = LocationRepository(requireActivity(),this)*/
+
+
 
         init(view)
     }

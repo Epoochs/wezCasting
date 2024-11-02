@@ -17,7 +17,10 @@ import kotlinx.coroutines.launch
 class WeatherRepository(private val weatherService: WeatherService, private val weatherDatabase: WeatherDatabase){//, private val weatherDatabase: WeatherDatabase){
 
     private val _savedData = MutableStateFlow<List<CurrentWeather>?>(emptyList())
+    private val _lastSavedData = MutableStateFlow<CurrentWeather?>(null)
+
     val savedData : StateFlow<List<CurrentWeather>?> = _savedData
+    val lastSavedData : StateFlow<CurrentWeather?> = _lastSavedData
 
     companion object{
         private var INSTANCE: WeatherRepository? = null
@@ -78,6 +81,10 @@ class WeatherRepository(private val weatherService: WeatherService, private val 
         if (weather != null) {
             weatherDatabase.getWeatherDao().removeWeatherLocation(weather)
         }
+    }
+
+    suspend fun removeById(id:Int){
+        weatherDatabase.getWeatherDao().removeWeatherLocationById(id)
     }
 
     suspend fun removeAll(){

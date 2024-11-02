@@ -20,6 +20,9 @@ interface WeatherDao {
     @Delete
     suspend fun removeWeatherLocation(weather: CurrentWeather)
 
+    @Query("DELETE FROM weather_table WHERE id = :id")
+    suspend fun removeWeatherLocationById(id : Int)
+
     @Query("DELETE FROM weather_table")
     suspend fun removeAllWeatherLocation()
 }

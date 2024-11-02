@@ -1,6 +1,7 @@
 package com.example.wezcasting.View.Favourite.Adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.wezcasting.Model.CurrentWeather
 import com.example.wezcasting.Model.WeatherCasting
 import com.example.wezcasting.R
+import com.example.wezcasting.View.Favourite.SavedActivity
+import com.example.wezcasting.WeatherActivity
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -34,6 +37,14 @@ class MySavedAdapter(var context: Context, var weatherCasting: List<CurrentWeath
         holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
         holder.tvTempMax.text = "H:" + currentWeatherForecast.main.temp_max.toInt().toString() + "°"
         holder.tvTempMin.text = "L:" + currentWeatherForecast.main.temp_min.toInt().toString() + "°"
+
+        holder.convertView.setOnClickListener{
+            val intent = Intent(context, WeatherActivity::class.java)
+            intent.putExtra("Lat" ,currentWeatherForecast.coord.lat)
+            intent.putExtra("Lon", currentWeatherForecast.coord.lon)
+            intent.putExtra("id", currentWeatherForecast.id)
+            context.startActivity(intent)
+        }
     }
 
     class ViewHolder(var convertView: View) : RecyclerView.ViewHolder(convertView){

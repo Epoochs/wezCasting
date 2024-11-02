@@ -210,7 +210,7 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
                 if(currenWeather != null){
                     currentWeather1 = currenWeather
                     println(currenWeather.name)
-                    showLocationDetailsDialog(currenWeather.name,currenWeather.weather.get(0).description,currenWeather.main.temp.toString(),currenWeather.main.temp_max.toString(),currenWeather.main.temp_min.toString())
+                    showLocationDetailsDialog(currenWeather.name,currenWeather.weather.get(0).description,""+currenWeather.main.temp.toInt().toString()+"°","H:"+currenWeather.main.temp_max.toInt().toString()+"°","L:"+currenWeather.main.temp_min.toInt().toString()+"°")
                 }
             }
         }
