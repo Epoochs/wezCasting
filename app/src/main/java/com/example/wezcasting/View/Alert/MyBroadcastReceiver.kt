@@ -17,10 +17,13 @@ class MyBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val alertId = intent.getIntExtra("alertId", -1)
         val weatherDesc = intent.getStringExtra("weather")
+        val town = intent.getStringExtra("Town")
         if (alertId != -1) {
             println("Alarm $alertId Says hi")
             if (weatherDesc != null) {
-                sendNotification(context, "Weather Alert", weatherDesc)
+                if (town != null) {
+                    sendNotification(context, town, weatherDesc)
+                }
             }
         }
     }

@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.core.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.testng)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.gson)

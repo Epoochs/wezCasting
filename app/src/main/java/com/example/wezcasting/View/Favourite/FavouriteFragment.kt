@@ -115,10 +115,16 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
         })
 
         myLocationButton.setOnClickListener{
-            var myMarker = googleMapView.addMarker(MarkerOptions().position(myCurrentLoc).title("You are here").icon(
-                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
-            ))
-            googleMapView.moveCamera(CameraUpdateFactory.newLatLng(myCurrentLoc))
+            if(!myCurrentLoc.equals(null)) {
+                var myMarker = googleMapView.addMarker(
+                    MarkerOptions().position(myCurrentLoc).title("You are here").icon(
+                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
+                    )
+                )
+                googleMapView.moveCamera(CameraUpdateFactory.newLatLng(myCurrentLoc))
+            }else{
+                println("Still fetching")
+            }
         }
 
         mySavesButton.setOnClickListener{
@@ -170,24 +176,20 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
 
     fun showLocationDetailsDialog(locationName: String, currentWeatherDesc: String, currentTemp : String, currentHighTemp:String
                                   ,currentLowTemp:String) {
-        // Inflate the dialog layout
         val dialogView = layoutInflater.inflate(com.example.wezcasting.R.layout.popup_details, null)
 
-        // Reference the views in the layout
         val tvLocationName = dialogView.findViewById<TextView>(com.example.wezcasting.R.id.tvLocationName)
         val tvCurrentWeather = dialogView.findViewById<TextView>(com.example.wezcasting.R.id.tvCurrentWeather)
         val tvCurrentTemp = dialogView.findViewById<TextView>(com.example.wezcasting.R.id.tvCurrentTemp)
         val tvCurrentLowTemp = dialogView.findViewById<TextView>(com.example.wezcasting.R.id.tvCurrentLowTemp)
         val tvCurrentHighTemp = dialogView.findViewById<TextView>(com.example.wezcasting.R.id.tvCurrentHighTemp)
 
-        // Set the text
         tvLocationName.text = locationName
         tvCurrentWeather.text = currentWeatherDesc
         tvCurrentTemp.text = currentTemp
         tvCurrentHighTemp.text = currentHighTemp
         tvCurrentLowTemp.text = currentLowTemp
 
-        // Create and show the dialog
         if(dioShow) {
             AlertDialog.Builder(requireContext())
                 .setView(dialogView)

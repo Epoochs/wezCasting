@@ -83,6 +83,12 @@ class WeatherRepository(private val weatherService: WeatherService, private val 
         }
     }
 
+    suspend fun removeAlarm(alarm: Alarm){
+        if (alarm != null){
+            weatherDatabase.alarmDao().deleteAlarm(alarm)
+        }
+    }
+
     suspend fun removeById(id:Int){
         weatherDatabase.getWeatherDao().removeWeatherLocationById(id)
     }

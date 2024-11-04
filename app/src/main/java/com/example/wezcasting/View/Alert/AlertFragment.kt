@@ -12,6 +12,8 @@ import android.widget.ImageButton
 import android.widget.TimePicker
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.wezcasting.Model.Alarm
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
@@ -19,6 +21,8 @@ import com.example.wezcasting.Model.WeatherRepository
 import com.example.wezcasting.Networking.WeatherClinet
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.R
+import com.example.wezcasting.View.Alert.Adapter.MyAlertAdapter
+import com.example.wezcasting.View.Home.Adapter.MyDailyDetailsAdapter
 import com.example.wezcasting.db.AlarmDao
 import com.example.wezcasting.db.WeatherDatabase
 import kotlinx.coroutines.launch
@@ -35,6 +39,10 @@ class AlertFragment : Fragment(), OnLocationUpdates {
     lateinit var weatherService : WeatherService
     lateinit var weatherRepository: WeatherRepository
     lateinit var weatherDatabase: WeatherDatabase
+
+    lateinit var recyclerViewAlert: RecyclerView
+    lateinit var myAlertDetailsAdapter: MyAlertAdapter
+    lateinit var alertLayoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +70,22 @@ class AlertFragment : Fragment(), OnLocationUpdates {
 
         alertViewModelFactory = AlertViewModelFactory(alertDao)
         alertViewModel = ViewModelProvider(this, alertViewModelFactory).get(AlertViewModel::class.java)
+
+        recyclerViewAlert = view.findViewById(R.id.rvSavedAlarms)
+        alertLayoutManager = LinearLayoutManager(requireActivity())
+        alertLayoutManager.orientation = RecyclerView.VERTICAL
+        recyclerViewAlert.setLayoutManager(alertLayoutManager)
+        myAlertDetailsAdapter = MyAlertAdapter(requireActivity(), emptyList(), weatherDatabase)
+        recyclerViewAlert.setAdapter(myAlertDetailsAdapter)
+
+        alertViewModel.getAlarms()
+
+        lifecycleScope.launch {
+            alertViewModel.alert.collect{
+                println("List alert in UI: " + it.size)
+                myAlertDetailsAdapter.submitList(it.toMutableList())
+            }
+        }
     }
 
     private fun showDataTimePickers(){
@@ -92,7 +116,6 @@ class AlertFragment : Fragment(), OnLocationUpdates {
         lifecycleScope.launch {
             weatherRepository.fetchCurrentWeather(lat, lon, "en", "metric").collect{ currentWeather ->
                 if (currentWeather != null) {
-                    alertViewModel.getAlarms()
                     alertViewModel.scheduleAllAlerts(requireContext(),currentWeather)
                 }
             }

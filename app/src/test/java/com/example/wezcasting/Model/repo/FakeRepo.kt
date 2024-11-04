@@ -6,4 +6,4 @@ import com.example.wezcasting.db.IWeatherLocalDataSource
 class FakeRepo(
     private val remoteDataSource: IWeatherRemoteDataSource,
     private val localDataSource: IWeatherLocalDataSource
-) : RepoInterface {
+){}

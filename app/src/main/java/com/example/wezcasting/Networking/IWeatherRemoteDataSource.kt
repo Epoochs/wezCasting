@@ -7,5 +7,4 @@ import kotlinx.coroutines.flow.Flow
 interface IWeatherRemoteDataSource {
 
     suspend fun fetchCurrentWeather(lon:Double,lat:Double,apid:String,units:String,lang:String): Flow<CurrentWeather>
-    suspend fun fetchForecast(lon:Double,lat:Double,apid:String,units:String,lang:String):Flow<WeatherForecastResponse>
 }
