@@ -34,6 +34,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures{
+        aidl = true
+    }
 }
 
 dependencies {
@@ -45,6 +49,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
     implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,5 +83,21 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation (libs.osmdroid.android)
     implementation("androidx.core:core-splashscreen:1.0.0")
+
+    testImplementation("androidx.test:core-ktx:1.5.0")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.5")
+    testImplementation ("org.robolectric:robolectric:4.8")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+
+
+    testImplementation("app.cash.turbine:turbine:0.5.1")
+
+    //implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("org.osmdroid:osmdroid-android:6.1.10")
+
+    implementation("com.google.guava:guava:31.1-android")
 
 }

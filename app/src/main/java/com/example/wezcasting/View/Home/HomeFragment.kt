@@ -136,6 +136,7 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                 weatherService = WeatherClinet.weatherService
                 weatherDatabase = WeatherDatabase.getInstance(requireActivity())
                 weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+
             }
         })
 

@@ -154,6 +154,7 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
 
     override fun getMycurrentLocation(lat: Double, lon: Double) {
         myCurrentLoc = LatLng(lat,lon)
+        println("Current Location: " + myCurrentLoc.toString())
         if(count) {
             myMarker = googleMapView.addMarker(
                 MarkerOptions().position(myCurrentLoc).title("You are here").icon(
