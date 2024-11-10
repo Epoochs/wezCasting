@@ -11,8 +11,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.wezcasting.HomeSettingsSharedVM
 import com.example.wezcasting.Model.CurrentWeather
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
@@ -49,6 +51,10 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
     lateinit var  myCurrentLoc : LatLng
     var count = true
     var dioShow = false
+    var lang = "en"
+    var unit = "metric"
+    var genunit = ""
+    lateinit var sharedVM: HomeSettingsSharedVM
 
     lateinit var favoriteViewModel: FavoriteViewModel
     lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
@@ -74,6 +80,18 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
 
         favoriteViewModelFactory = FavoriteViewModelFactory(weatherRepository, 0.0, 0.0)
         favoriteViewModel = ViewModelProvider(this, favoriteViewModelFactory).get(FavoriteViewModel::class.java)
+
+        sharedVM = ViewModelProvider(requireActivity()).get(HomeSettingsSharedVM::class.java)
+        sharedVM.lang.observe(viewLifecycleOwner, Observer { language ->
+            sharedVM.tempUnit.observe(viewLifecycleOwner, Observer { tempUnits ->
+                sharedVM.unit.observe(viewLifecycleOwner, Observer { units ->
+                    lang = language
+                    println("SharedVM" +  tempUnits)
+                    unit = tempUnits
+                    genunit = units
+                })
+            })
+        })
 
 
         val mapFragment = childFragmentManager.findFragmentById(com.example.wezcasting.R.id.map) as SupportMapFragment?
@@ -129,6 +147,10 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
 
         mySavesButton.setOnClickListener{
             val intent = Intent(requireContext(), SavedActivity::class.java)
+            println("SaveIntent: " + lang)
+            intent.putExtra("langSaved", lang)
+            intent.putExtra("unitSaved", unit)
+            intent.putExtra("GenUnitSaved", genunit)
             startActivity(intent)
         }
 
@@ -146,7 +168,7 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
             var latlin = LatLng(location.latitude, location.longitude)
             println("latlin" + latlin.toString())
             myMark = googleMapView.addMarker(MarkerOptions().position(latlin))!!
-            getCurrentLocationWeather(location.latitude, location.longitude)
+            getCurrentLocationWeather(location.latitude, location.longitude,lang,genunit)
         }
     }
 
@@ -194,7 +216,9 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
             AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setPositiveButton("Save") { _, _ ->
-                    currentWeather1?.let { favoriteViewModel.upsert(it) }
+                    currentWeather1?.let {
+                        it.tempUnit = unit
+                        favoriteViewModel.upsert(it) }
                 }
                 .create()
                 .show()
@@ -202,11 +226,11 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
         }
     }
 
-    fun getCurrentLocationWeather(lat: Double, lon: Double){
+    fun getCurrentLocationWeather(lat: Double, lon: Double, lang : String, unit : String){
         println("getCurrentWeather " + lat)
 
         favoriteViewModel.updateCoordinates(lat,lon)
-        favoriteViewModel.getCurrentWeather()
+        favoriteViewModel.getCurrentWeather(lang,unit)
 
         lifecycleScope.launch {
             favoriteViewModel.data.collect{currenWeather->

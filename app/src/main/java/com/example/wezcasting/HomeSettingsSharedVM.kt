@@ -20,6 +20,9 @@ class HomeSettingsSharedVM : ViewModel() {
     private val _unit = MutableLiveData<String>("metric")
     val unit : LiveData<String> = _unit
 
+    private val _generalData = MutableLiveData<String>("metric")
+    val generalUnit : LiveData<String> = _generalData
+
     fun setLang(langSelected : String){
         _lang.value = langSelected
     }
@@ -36,8 +39,11 @@ class HomeSettingsSharedVM : ViewModel() {
         _pressureUnit.value = unitSelected
     }
 
+    fun setGeneralUnit(unitSelected: String){
+        _generalData.value = unitSelected
+    }
+
     fun setUnit(unitSelected: String){
         _unit.value = unitSelected
     }
-
 }

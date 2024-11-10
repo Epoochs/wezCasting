@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken
 data class CurrentWeather(
     @PrimaryKey(autoGenerate = true)
     val id : Int,
+    var tempUnit: String = "c",
     val coord: Coord,
     val weather: List<WeatherCurrent>,
     val main: Main,

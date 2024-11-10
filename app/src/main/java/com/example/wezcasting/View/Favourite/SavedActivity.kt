@@ -1,5 +1,6 @@
 package com.example.wezcasting.View.Favourite
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -41,12 +42,23 @@ class SavedActivity : AppCompatActivity(), OnLocationUpdates {
     lateinit var weatherRepository: WeatherRepository
     lateinit var locationRepository : LocationRepository
 
+    var lang : String? = "en"
+    var unit : String? = "metric"
+    var genUnit : String? = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_saved)
 
         supportActionBar?.hide()
+
+        lang = intent.getStringExtra("langSaved")
+        unit = intent.getStringExtra("unitSaved")
+        genUnit = intent.getStringExtra("GenUnitSaved")
+
+        println("savedLang: " + lang)
+        println("savedUnit: " + unit)
 
         weatherService = WeatherClinet.weatherService
         weatherDatabase = WeatherDatabase.getInstance(this)
@@ -73,7 +85,7 @@ class SavedActivity : AppCompatActivity(), OnLocationUpdates {
         savedLayoutManager = LinearLayoutManager(this)
         savedLayoutManager.orientation = RecyclerView.VERTICAL
         recyclerViewSaved.setLayoutManager(savedLayoutManager)
-        mySavedAdapter = MySavedAdapter(this, emptyList())
+        mySavedAdapter = MySavedAdapter(this, emptyList(), lang, unit, genUnit)
         recyclerViewSaved.setAdapter(mySavedAdapter)
     }
 

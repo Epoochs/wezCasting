@@ -18,7 +18,7 @@ import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MySavedAdapter(var context: Context, var weatherCasting: List<CurrentWeather>) : ListAdapter<CurrentWeather, MySavedAdapter.ViewHolder> (
+class MySavedAdapter(var context: Context, var weatherCasting: List<CurrentWeather>, var lang : String?, var unit : String?, var genUnit : String?) : ListAdapter<CurrentWeather, MySavedAdapter.ViewHolder> (
     SavedDiffUtil()
 ){
 
@@ -32,17 +32,110 @@ class MySavedAdapter(var context: Context, var weatherCasting: List<CurrentWeath
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentWeatherForecast = getItem(position)
 
-        holder.tvTimeTemp.text = currentWeatherForecast.main.temp.toInt().toString() + "°"
-        holder.tvTownName.text = currentWeatherForecast.name
-        holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
-        holder.tvTempMax.text = "H:" + currentWeatherForecast.main.temp_max.toInt().toString() + "°"
-        holder.tvTempMin.text = "L:" + currentWeatherForecast.main.temp_min.toInt().toString() + "°"
+        println("currentWeatherForecast Temp unit: " + currentWeatherForecast.tempUnit)
+        println("currentWeatherForecast Temp value:" + currentWeatherForecast.main.temp)
+
+        println( "Fav " + unit)
+
+        if (unit.equals("c")) {
+            if (currentWeatherForecast.tempUnit.equals("c")) {
+
+                holder.tvTimeTemp.text = currentWeatherForecast.main.temp.toInt().toString() + "°"
+                holder.tvTownName.text = currentWeatherForecast.name
+                holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                holder.tvTempMax.text =
+                    "H:" + currentWeatherForecast.main.temp_max.toInt().toString() + "°"
+                holder.tvTempMin.text =
+                    "L:" + currentWeatherForecast.main.temp_min.toInt().toString() + "°"
+            }else{
+                if (currentWeatherForecast.tempUnit.equals("f")){
+                    holder.tvTimeTemp.text = ((currentWeatherForecast.main.temp - 32) * 5/9).toInt().toString() + "°"
+                    holder.tvTownName.text = currentWeatherForecast.name
+                    holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                    holder.tvTempMax.text =
+                        "H:" + ((currentWeatherForecast.main.temp_max - 32) * 5 / 9).toInt().toString() + "°"
+                    holder.tvTempMin.text =
+                        "L:" + ((currentWeatherForecast.main.temp_min - 32) * 5 / 9).toInt().toString() + "°"
+                }else{
+                    holder.tvTimeTemp.text = (currentWeatherForecast.main.temp - 273.15).toInt().toString() + "°"
+                    holder.tvTownName.text = currentWeatherForecast.name
+                    holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                    holder.tvTempMax.text =
+                        "H:" + (currentWeatherForecast.main.temp_max - 273.15).toInt().toString() + "°"
+                    holder.tvTempMin.text =
+                        "L:" + (currentWeatherForecast.main.temp_min - 273.15).toInt().toString() + "°"
+                }
+            }
+        }else{
+            if (unit.equals("f")){
+                if (currentWeatherForecast.tempUnit.equals("f")){
+                    holder.tvTimeTemp.text = currentWeatherForecast.main.temp.toInt().toString() + "°"
+                    holder.tvTownName.text = currentWeatherForecast.name
+                    holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                    holder.tvTempMax.text =
+                        "H:" + currentWeatherForecast.main.temp_max.toInt().toString() + "°"
+                    holder.tvTempMin.text =
+                        "L:" + currentWeatherForecast.main.temp_min.toInt().toString() + "°"
+                }else{
+                    if (currentWeatherForecast.tempUnit.equals("c")){
+                        holder.tvTimeTemp.text = ((currentWeatherForecast.main.temp * 1.8) + 32).toInt().toString() + "°"
+                        holder.tvTownName.text = currentWeatherForecast.name
+                        holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                        holder.tvTempMax.text =
+                            "H:" + ((currentWeatherForecast.main.temp_max * 1.8) + 32).toInt().toString() + "°"
+                        holder.tvTempMin.text =
+                            "L:" + ((currentWeatherForecast.main.temp_min * 1.8) + 32).toInt().toString() + "°"
+                    }else{
+                        holder.tvTimeTemp.text = ((currentWeatherForecast.main.temp - 273.15) * 1.8 + 32).toInt().toString() + "°"
+                        holder.tvTownName.text = currentWeatherForecast.name
+                        holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                        holder.tvTempMax.text =
+                            "H:" + ((currentWeatherForecast.main.temp_max - 273.15) * 1.8 + 32).toInt().toString() + "°"
+                        holder.tvTempMin.text =
+                            "L:" + ((currentWeatherForecast.main.temp_min - 273.15) * 1.8 + 32).toInt().toString() + "°"
+                    }
+                }
+            }else{
+                if (currentWeatherForecast.tempUnit.equals("k")){
+                    holder.tvTimeTemp.text = currentWeatherForecast.main.temp.toInt().toString() + "°"
+                    holder.tvTownName.text = currentWeatherForecast.name
+                    holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                    holder.tvTempMax.text =
+                        "H:" + currentWeatherForecast.main.temp_max.toInt().toString() + "°"
+                    holder.tvTempMin.text =
+                        "L:" + currentWeatherForecast.main.temp_min.toInt().toString() + "°"
+                }else{
+                    if(currentWeatherForecast.tempUnit.equals("c")){
+                        holder.tvTimeTemp.text = (currentWeatherForecast.main.temp + 273.15).toInt().toString() + "°"
+                        holder.tvTownName.text = currentWeatherForecast.name
+                        holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                        holder.tvTempMax.text =
+                            "H:" + (currentWeatherForecast.main.temp_max + 273.15).toInt().toString() + "°"
+                        holder.tvTempMin.text =
+                            "L:" + (currentWeatherForecast.main.temp_min + 273.15).toInt().toString() + "°"
+                    }else{
+                        if (currentWeatherForecast.tempUnit.equals("f")){
+                            holder.tvTimeTemp.text = ((currentWeatherForecast.main.temp - 32) * 5 / 9 + 273.15).toInt().toString() + "°"
+                            holder.tvTownName.text = currentWeatherForecast.name
+                            holder.tvWeatherDesc.text = currentWeatherForecast.weather.get(0).description
+                            holder.tvTempMax.text =
+                                "H:" + ((currentWeatherForecast.main.temp_max - 32) * 5 / 9 + 273.15).toInt().toString() + "°"
+                            holder.tvTempMin.text =
+                                "L:" + ((currentWeatherForecast.main.temp_min - 32) * 5 / 9 + 273.15).toInt().toString() + "°"
+                        }
+                    }
+                }
+            }
+        }
 
         holder.convertView.setOnClickListener{
             val intent = Intent(context, WeatherActivity::class.java)
             intent.putExtra("Lat" ,currentWeatherForecast.coord.lat)
             intent.putExtra("Lon", currentWeatherForecast.coord.lon)
             intent.putExtra("id", currentWeatherForecast.id)
+            intent.putExtra("AdapterLang", lang)
+            intent.putExtra("AdapterUnit", unit)
+            intent.putExtra("General Unit", genUnit)
             context.startActivity(intent)
         }
     }

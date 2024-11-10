@@ -39,6 +39,7 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:id="@+id/F"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -46,6 +47,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
+                android:id="@+id/C"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -53,6 +55,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
+                android:id="@+id/K"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -90,6 +93,7 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:id="@+id/KM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -97,6 +101,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
+                android:id="@+id/MI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -147,6 +152,7 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:id="@+id/en"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"
@@ -154,6 +160,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
+                android:id="@+id/ar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#FFFFFF"

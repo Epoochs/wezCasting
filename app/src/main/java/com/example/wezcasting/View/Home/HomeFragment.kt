@@ -199,17 +199,17 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                                             }
                                         }else{
                                             if(tempUnit.equals("f")){
-                                                var currentTemp = ((currentWeather.main.temp * 1.8) + 32).toInt()
+                                                var currentTemp = (currentWeather.main.temp).toInt()
                                                 tvTownCurrentTemp.text = currentTemp.toString()
                                                 tvTempUnit.text = "°F"
 
-                                                var highTemp_f = ((currentWeather.main.temp_max * 1.8) + 32).toInt()
-                                                var lowTemp_f = ((currentWeather.main.temp_min * 1.8) + 32).toInt()
+                                                var highTemp_f = (currentWeather.main.temp_max).toInt()
+                                                var lowTemp_f = (currentWeather.main.temp_min).toInt()
                                                 tvHighestTemp.text = "H:" + highTemp_f + "°"
                                                 tvLowestTemp.text = "L:" + lowTemp_f + "°"
 
                                                 /* Feels-like Temp */
-                                                var feelLikeTemp_f = ((currentWeather.main.feels_like * 1.8) + 32).toInt()
+                                                var feelLikeTemp_f = (currentWeather.main.feels_like).toInt()
                                                 tvFeelsLike.text = "" + feelLikeTemp_f.toString() + "°"
                                                 if (feelLikeTemp_f == currentTemp) {
                                                     tvFeelsLikeDesc.text = "it feels exactly the same"
@@ -221,15 +221,15 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                                                     }
                                                 }
                                             }else{
-                                                var currentTemp = (currentWeather.main.temp + 273.15).toInt()
+                                                var currentTemp = (currentWeather.main.temp).toInt()
                                                 tvTownCurrentTemp.text = currentTemp.toString()
                                                 tvTempUnit.text = "°K"
 
-                                                tvHighestTemp.text = "H:" + (currentWeather.main.temp_max + 273.15).toInt() + "°"
-                                                tvLowestTemp.text = "L:" + (currentWeather.main.temp_min + 273.15).toInt() + "°"
+                                                tvHighestTemp.text = "H:" + (currentWeather.main.temp_max).toInt() + "°"
+                                                tvLowestTemp.text = "L:" + (currentWeather.main.temp_min).toInt() + "°"
 
                                                 /* Feels-like Temp */
-                                                var feelLikeTemp_k = (currentWeather.main.feels_like + 273.15).toInt()
+                                                var feelLikeTemp_k = (currentWeather.main.feels_like).toInt()
                                                 tvFeelsLike.text = "" + feelLikeTemp_k.toString() + "°"
                                                 if (feelLikeTemp_k == currentTemp) {
                                                     tvFeelsLikeDesc.text = "it feels exactly the same"
@@ -309,7 +309,7 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                                     } else {
                                         println("Nothing")
                                     }
-                                    weatherRepository.upsert(currentWeather)
+                                   // weatherRepository.upsert(currentWeather)
                                     homeViewModel.getWeatherForecast()
 
                                     lifecycleScope.launch {

@@ -41,10 +41,10 @@ class FavoriteViewModel(private val weatherRepository: WeatherRepository, var la
         }
     }
 
-    fun getCurrentWeather(){
+    fun getCurrentWeather(lang : String, unit : String){
         println("getCurrent" + lat)
         viewModelScope.launch {
-            weatherRepository.fetchCurrentWeather(lat,lon,"en","metric").collect{currentWeather ->
+            weatherRepository.fetchCurrentWeather(lat,lon,lang,unit).collect{currentWeather ->
                 _data.value = currentWeather
             }
         }

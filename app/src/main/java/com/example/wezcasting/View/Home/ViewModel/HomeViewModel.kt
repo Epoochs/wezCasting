@@ -19,6 +19,7 @@ class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : 
 
     fun getCurrentWeather(){
         viewModelScope.launch {
+            println("Current unit = " + unit)
             weatherRepository.fetchCurrentWeather(lat,lon,lang,unit).collect{currentWeather ->
                 _data.value = currentWeather
             }
@@ -27,7 +28,8 @@ class HomeViewModel(private val weatherRepository: WeatherRepository, var lat : 
 
     fun getWeatherForecast(){
         viewModelScope.launch {
-            weatherRepository.fetchWeatherForecast(lat,lon, lang, units = unit,"").collect{weatherForecast ->
+            println("Forecast unit = " + unit)
+            weatherRepository.fetchWeatherForecast(lat,lon, lang, unit,"").collect{weatherForecast ->
                 _dataForecast.value = weatherForecast
             }
         }
