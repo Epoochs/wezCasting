@@ -28,6 +28,8 @@ import com.example.wezcasting.View.Home.ViewModel.HomeViewModel
 import com.example.wezcasting.View.Home.ViewModel.HomeViewModelFactory
 import com.example.wezcasting.HomeSettingsSharedVM
 import com.example.wezcasting.Model.CurrentWeather
+import com.example.wezcasting.Model.interfaces.WeatherLocalDataSourceImp
+import com.example.wezcasting.Model.interfaces.WeatherRemoteDataSourceImp
 import com.example.wezcasting.db.WeatherDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -116,16 +118,20 @@ class HomeFragment : Fragment() , OnLocationUpdates {
             if (check){
                 if (connectionRestore) {
                     println("Connected")
-                    weatherService = WeatherClinet.weatherService
-                    weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-                    weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+                    val weatherService = WeatherClinet.weatherService
+                    val weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                    val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+                    val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+                    weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
                     locationRepository = LocationRepository(requireActivity(), this)
                 }else{
                     println("Connection Restored")
                     Snackbar.make(view, "Connection Restored", Snackbar.LENGTH_SHORT).show()
-                    weatherService = WeatherClinet.weatherService
-                    weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-                    weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+                    val weatherService = WeatherClinet.weatherService
+                    val weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                    val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+                    val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+                    weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
                     locationRepository = LocationRepository(requireActivity(), this)
                     connectionRestore = true
                 }
@@ -133,9 +139,11 @@ class HomeFragment : Fragment() , OnLocationUpdates {
                 println("Not connected")
                 connectionRestore = false
                 Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_SHORT).show();
-                weatherService = WeatherClinet.weatherService
-                weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-                weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+                val weatherService = WeatherClinet.weatherService
+                val weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+                val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+                val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+                weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
 
             }
         })

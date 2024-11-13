@@ -19,6 +19,8 @@ import com.example.wezcasting.Model.CurrentWeather
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
 import com.example.wezcasting.Model.WeatherRepository
+import com.example.wezcasting.Model.interfaces.WeatherLocalDataSourceImp
+import com.example.wezcasting.Model.interfaces.WeatherRemoteDataSourceImp
 import com.example.wezcasting.Networking.WeatherClinet
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.View.Favourite.ViewModel.FavoriteViewModel
@@ -74,9 +76,11 @@ class FavouriteFragment : Fragment(), OnMapReadyCallback, OnLocationUpdates {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        weatherService = WeatherClinet.weatherService
-        weatherDatabase = WeatherDatabase.getInstance(requireActivity())
-        weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+        val weatherService = WeatherClinet.weatherService
+        val weatherDatabase = WeatherDatabase.getInstance(requireActivity())
+        val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+        val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+        weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
 
         favoriteViewModelFactory = FavoriteViewModelFactory(weatherRepository, 0.0, 0.0)
         favoriteViewModel = ViewModelProvider(this, favoriteViewModelFactory).get(FavoriteViewModel::class.java)

@@ -101,4 +101,15 @@ dependencies {
 
     implementation("com.google.guava:guava:31.1-android")
 
+    // Coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    // AndroidX Testing Libraries
+    testImplementation ("androidx.arch.core:core-testing:2.1.0")  // For LiveData, StateFlow testing
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.7.2") // JUnit
+    testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    testImplementation ("org.mockito:mockito-core:4.6.1") // Mockito for mocking
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0") // Mockito Kotlin extensions
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2") // Coroutines Test
+    implementation(kotlin("test"))
+
 }

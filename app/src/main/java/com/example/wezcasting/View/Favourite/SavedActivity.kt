@@ -16,6 +16,8 @@ import com.example.wezcasting.Model.CurrentWeather
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.OnLocationUpdates
 import com.example.wezcasting.Model.WeatherRepository
+import com.example.wezcasting.Model.interfaces.WeatherLocalDataSourceImp
+import com.example.wezcasting.Model.interfaces.WeatherRemoteDataSourceImp
 import com.example.wezcasting.Networking.WeatherClinet
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.R
@@ -60,9 +62,11 @@ class SavedActivity : AppCompatActivity(), OnLocationUpdates {
         println("savedLang: " + lang)
         println("savedUnit: " + unit)
 
-        weatherService = WeatherClinet.weatherService
-        weatherDatabase = WeatherDatabase.getInstance(this)
-        weatherRepository = WeatherRepository.getInstance(weatherService,weatherDatabase)
+        val weatherService = WeatherClinet.weatherService
+        val weatherDatabase = WeatherDatabase.getInstance(this)
+        val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+        val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+        weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
         locationRepository = LocationRepository(this,this)
 
         savedViewModelFactory = SavedViewModelFactory(weatherRepository, 0.0, 0.0)

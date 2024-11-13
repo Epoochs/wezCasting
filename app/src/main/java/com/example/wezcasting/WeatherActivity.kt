@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.wezcasting.Model.LocationRepository
 import com.example.wezcasting.Model.WeatherCasting
 import com.example.wezcasting.Model.WeatherRepository
+import com.example.wezcasting.Model.interfaces.WeatherLocalDataSourceImp
+import com.example.wezcasting.Model.interfaces.WeatherRemoteDataSourceImp
 import com.example.wezcasting.Networking.WeatherClinet
 import com.example.wezcasting.Networking.WeatherService
 import com.example.wezcasting.View.Home.Adapter.MyDailyDetailsAdapter
@@ -103,9 +105,12 @@ class WeatherActivity : AppCompatActivity() {
         genUnit = intent.getStringExtra("General Unit").toString()
         id = intent.getIntExtra("id", 0)
 
-        weatherService = WeatherClinet.weatherService
-        weatherDatabase = WeatherDatabase.getInstance(this)
-        weatherRepository = WeatherRepository.getInstance(weatherService, weatherDatabase)
+        val weatherService = WeatherClinet.weatherService
+        val weatherDatabase = WeatherDatabase.getInstance(this)
+
+        val localDataSource = WeatherLocalDataSourceImp(weatherDatabase)
+        val remoteDataSource = WeatherRemoteDataSourceImp(weatherService)
+        weatherRepository = WeatherRepository.getInstance(localDataSource, remoteDataSource)
 
         val factory = HomeViewModelFactory(weatherRepository, lat, lon, lang, genUnit)
         homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
