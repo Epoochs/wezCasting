@@ -39,53 +39,53 @@ class WeatherRepositoryTest {
     fun upsertWeatherForecast_retrievesSameForecast() = runTest {
         // Given
         val mockWeather = CurrentWeather(
-            id = 1,  // The ID of the weather entry (can be any integer)
-            tempUnit = "c",  // Temperature unit (Celsius)
+            id = 1,
+            tempUnit = "c",
             coord = Coord(
-                lon = 2.3,  // Longitude value
-                lat = 43.4   // Latitude value
+                lon = 2.3,
+                lat = 43.4
             ),
             weather = listOf(
                 WeatherCurrent(
-                    id = 0,  // Weather condition ID (for example, 0 could be "Clear Sky")
-                    main = "",  // Weather type (e.g., "Clear", "Clouds", etc.)
-                    description = "",  // Description of the weather (e.g., "Clear sky")
-                    icon = ""  // Icon representing the weather condition (e.g., "01d" for clear sky)
+                    id = 0,
+                    main = "",
+                    description = "",
+                    icon = ""
                 )
             ),
             main = Main(
-                temp = 34.4,  // Temperature in Celsius
-                feels_like = 54.4,  // Feels like temperature in Celsius
-                temp_min = 54.5,  // Minimum temperature in Celsius
-                temp_max = 54.5,  // Maximum temperature in Celsius
-                pressure = 3,  // Atmospheric pressure in hPa
-                humidity = 5,  // Humidity percentage
-                sea_level = 3,  // Sea level pressure in hPa
-                grnd_level = 5  // Ground level pressure in hPa
+                temp = 34.4,
+                feels_like = 54.4,
+                temp_min = 54.5,
+                temp_max = 54.5,
+                pressure = 3,
+                humidity = 5,
+                sea_level = 3,
+                grnd_level = 5
             ),
-            visibility = 34,  // Visibility in meters
+            visibility = 34,
             wind = Wind(
-                speed = 3.3,  // Wind speed in m/s
-                deg = 4,  // Wind direction in degrees (e.g., 0 = North)
-                gust = 32.3  // Wind gust speed in m/s
+                speed = 3.3,
+                deg = 4,
+                gust = 32.3
             ),
             clouds = Clouds(
-                all = 4  // Cloudiness percentage (e.g., 0 for clear sky, 100 for full cloud cover)
+                all = 4
             ),
             sys = Sys(
-                country = "Egypt",  // Country name
-                sunrise = 23,  // Sunrise time (timestamp in seconds)
-                sunset = 23  // Sunset time (timestamp in seconds)
+                country = "Egypt",
+                sunrise = 23,
+                sunset = 23
             ),
-            name = "Sherif"  // City name
+            name = "Sherif"
         )
 
         // When
-        repository.upsert(mockWeather) // Insert the mock data
-        val retrievedWeather = fakeLocalDataSource.getAllCurrentWeather().first() // Collect the first emitted value
+        repository.upsert(mockWeather)
+        val retrievedWeather = fakeLocalDataSource.getAllCurrentWeather().first()
 
         // Then
-        assertThat(retrievedWeather, IsEqual(listOf(mockWeather))) // Compare lists
+        assertThat(retrievedWeather, IsEqual(listOf(mockWeather)))
     }
 }
 
